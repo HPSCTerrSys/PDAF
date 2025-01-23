@@ -226,6 +226,16 @@ SUBROUTINE localize_covar_pdaf(dim_p, dim_obs, HP, HPH)
          ! dx = abs(longxy_obs(j) - longxy(state_pdaf2clm_c_p(i)))
          ! dy = abs(latixy_obs(j) - latixy(state_pdaf2clm_c_p(i)))
 
+         ! Debug output for lon(mycgridcell)-
+
+        WRITE(*, '(a,x,a,i5,x,a,i10)') "TSMP-PDAF-debug", "mype(w)=", mype_world, "localize_covar_pdaf: i=", i
+        WRITE(*, '(a,x,a,i5,x,a,i10)') "TSMP-PDAF-debug", "mype(w)=", mype_world, "localize_covar_pdaf: j=", j
+        WRITE(*, '(a,x,a,i5,x,a,i10)') "TSMP-PDAF-debug", "mype(w)=", mype_world, "localize_covar_pdaf: state_pdaf2clm_c_p(i)=", state_pdaf2clm_c_p(i)
+        WRITE(*, '(a,x,a,i5,x,a,i10)') "TSMP-PDAF-debug", "mype(w)=", mype_world, "localize_covar_pdaf: mycgridcell(state_pdaf2clm_c_p(i))=", mycgridcell(state_pdaf2clm_c_p(i))
+        WRITE(*, '(a,x,a,i5,x,a,es22.15)') "TSMP-PDAF-debug", "mype(w)=", mype_world, "localize_covar_pdaf: lon(mycgridcell(state_pdaf2clm_c_p(i)))=", lon(mycgridcell(state_pdaf2clm_c_p(i)))
+        WRITE(*, '(a,x,a,i5,x,a,i10)') "TSMP-PDAF-debug", "mype(w)=", mype_world, "localize_covar_pdaf: obs_pdaf2nc(j)=", obs_pdaf2nc(j)
+        WRITE(*, '(a,x,a,i5,x,a,es22.15)') "TSMP-PDAF-debug", "mype(w)=", mype_world, "localize_covar_pdaf: clmobs_lon(obs_pdaf2nc(j))=", clmobs_lon(obs_pdaf2nc(j))
+
          ! Units: lat/lon
          dx = abs(clmobs_lon(obs_pdaf2nc(j)) - lon(mycgridcell(state_pdaf2clm_c_p(i))))
          dy = abs(clmobs_lat(obs_pdaf2nc(j)) - lat(mycgridcell(state_pdaf2clm_c_p(i))))

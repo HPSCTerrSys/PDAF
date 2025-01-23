@@ -57,6 +57,7 @@ SUBROUTINE obs_op_pdaf(step, dim_p, dim_obs_p, state_p, m_state_p)
 #endif
         obs_interp_indices_p, &
         obs_interp_weights_p
+   USE mod_parallel_pdaf, ONLY: mype_world
    use mod_tsmp, &
        only: obs_interp_switch, &
        soilay, &
@@ -121,7 +122,19 @@ if (clmupdate_T.EQ.1) then
   ! currently implemented with simplified settings: Vegetation
   ! clumping parameter `Omega=1`; radiometer view angle `phi=0`
 
+#ifdef PDAF_DEBUG
+  WRITE(*, '(a,x,a,i5,x,a,x,i10)') "TSMP-PDAF-debug", "mype(w)=", mype_world, "obs_op_pdaf: dim_obs_p:", dim_obs_p
+#endif
+
   DO i = 1, dim_obs_p
+#ifdef PDAF_DEBUG
+    WRITE(*, '(a,x,a,i5,x,a,x,i10)') "TSMP-PDAF-debug", "mype(w)=", mype_world, "obs_op_pdaf: i:", i
+    WRITE(*, '(a,x,a,i5,x,a,i5,a,x,i10)') "TSMP-PDAF-debug", "mype(w)=", mype_world, "obs_op_pdaf: obs_index_p(", i, "):", obs_index_p(i)
+    WRITE(*, '(a,x,a,i5,x,a,i5,a,x,f12.8)') "TSMP-PDAF-debug", "mype(w)=", mype_world, "obs_op_pdaf: clm_paramarr(obs_index_p(", i, ")):", clm_paramarr(obs_index_p(i))
+    WRITE(*, '(a,x,a,i5,x,a,i5,a,x,f12.8)') "TSMP-PDAF-debug", "mype(w)=", mype_world, "obs_op_pdaf: state_p(obs_index_p(", i, ")):", state_p(obs_index_p(i))
+    WRITE(*, '(a,x,a,i5,x,a,x,i10)') "TSMP-PDAF-debug", "mype(w)=", mype_world, "obs_op_pdaf: clm_varsize:", clm_varsize
+    WRITE(*, '(a,x,a,i5,x,a,i5,a,x,f12.8)') "TSMP-PDAF-debug", "mype(w)=", mype_world, "obs_op_pdaf: state_p(clm_varsize+obs_index_p(", i, ")):", state_p(clm_varsize+obs_index_p(i))
+#endif
      m_state_p(i) &
     = (exp(-0.5*clm_paramarr(obs_index_p(i))) &
                      *state_p(obs_index_p(i))**4 & 
@@ -141,6 +154,11 @@ if (clmupdate_T.EQ.2) then
   lpointobs = .false.
 
   DO i = 1, dim_obs_p
+#ifdef PDAF_DEBUG
+    WRITE(*, '(a,x,a,i5,x,a,x,i10)') "TSMP-PDAF-debug", "mype(w)=", mype_world, "obs_op_pdaf: i:", i
+    WRITE(*, '(a,x,a,i5,x,a,i5,a,x,i10)') "TSMP-PDAF-debug", "mype(w)=", mype_world, "obs_op_pdaf: obs_index_p(", i, "):", obs_index_p(i)
+    WRITE(*, '(a,x,a,i5,x,a,i5,a,x,f12.8)') "TSMP-PDAF-debug", "mype(w)=", mype_world, "obs_op_pdaf: state_p(obs_index_p(", i, ")):", state_p(obs_index_p(i))
+#endif
     ! first implementation: simulated LST equals TSKIN
     m_state_p(i) = state_p(obs_index_p(i))
   END DO

@@ -109,6 +109,9 @@ module enkf_clm_mod
     integer :: begg, endg   ! per-proc gridcell ending gridcell indices
 
 
+    integer :: stat_var
+    character(len=100) :: err_var
+
     call get_proc_bounds(begg, endg, begl, endl, begc, endc, begp, endp)
 
 #ifdef PDAF_DEBUG
@@ -357,7 +360,12 @@ module enkf_clm_mod
     IF (allocated(clm_statevec)) deallocate(clm_statevec)
     if ((clmupdate_swc.ne.0) .or. (clmupdate_T.ne.0) .or. (clmupdate_texture.ne.0)) then
       !hcp added condition
-      allocate(clm_statevec(clm_statevecsize))
+      allocate(clm_statevec(clm_statevecsize), stat=stat_var, errmsg=err_var)
+#ifdef PDAF_DEBUG
+    ! Debug output of clm_statevecsize
+      ! WRITE(*, '(a,x,a,i5,x,a,i10)') "TSMP-PDAF-debug", "mype(w)=", mype, "define_clm_statevec: stat_var=", stat_var
+      ! WRITE(*, '(a,x,a,i5,x,a,a)') "TSMP-PDAF-debug", "mype(w)=", mype, "define_clm_statevec: err_var=", err_var
+#endif
     end if
 
     !write(*,*) 'clm_paramsize is ',clm_paramsize
@@ -1013,6 +1021,18 @@ module enkf_clm_mod
    !print *,'ni, nj ', ni, nj
    !print *,'cells per processor ', ncells
    !print *,'begg, endg ', begg, endg
+
+#ifdef PDAF_DEBUG
+    ! Debug output of clm_statevecsize
+    WRITE(*, '(a,x,a,i5,x,a,i10)') "TSMP-PDAF-debug", "mype(w)/iam=", iam, "domain_def_clm: ni=", ni
+    WRITE(*, '(a,x,a,i5,x,a,i10)') "TSMP-PDAF-debug", "mype(w)/iam=", iam, "domain_def_clm: nj=", nj
+    WRITE(*, '(a,x,a,i5,x,a,i10)') "TSMP-PDAF-debug", "mype(w)/iam=", iam, "domain_def_clm: ncells=", ncells
+    WRITE(*, '(a,x,a,i5,x,a,i10)') "TSMP-PDAF-debug", "mype(w)/iam=", iam, "domain_def_clm: begg=", begg
+    WRITE(*, '(a,x,a,i5,x,a,i10)') "TSMP-PDAF-debug", "mype(w)/iam=", iam, "domain_def_clm: endg=", endg
+    IF (allocated(longxy)) THEN
+      WRITE(*, '(a,x,a,i5,x,a)') "TSMP-PDAF-debug", "mype(w)/iam=", iam, "domain_def_clm: longxy ALLOCATED!!"
+    END IF
+#endif
 
     ! allocate vector with size of elements in x directions * size of elements in y directions
     allocate(longxy(ncells), stat=ier)
